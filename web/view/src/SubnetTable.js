@@ -98,9 +98,7 @@ const SubnetTable = (props) => {
     drawNetwork(props, rows, activeRowRef)
     // drawTableBody(props.subnets, rows, null, props, activeRowRef)
     useEffect(() => {
-        console.log(activeRowRef.current)
         if (activeRowRef.current != null) {
-
             activeRowRef.current.focus()
             activeRowRef.current.scrollIntoView(false)
         }

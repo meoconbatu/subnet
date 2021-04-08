@@ -37,7 +37,7 @@ function App() {
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
   const [state, dispatch] = useReducer(reducer, { networks: new Map(), maxHeight: 0 })
-  const [networks, setNetworks] = useState(new Map())
+  // const [networks, setNetworks] = useState(new Map())
   const qs = require('qs')
 
   const addSubnet = (root, cidr, children) => {
@@ -94,7 +94,6 @@ function App() {
   const getMaxHeight = (networks) => {
     var maxHeight = 0
     for (const [network, entry] of networks) {
-      // console.log(entry.maxPrefix, entry.subnets.prefix)
       if (entry.maxPrefix - entry.subnets.prefix + 1 > maxHeight) {
         maxHeight = entry.maxPrefix - entry.subnets.prefix + 1
       }
@@ -138,7 +137,6 @@ function App() {
         const root = new Map(state.networks)
         root.set(response.data.cidr, { subnets: response.data, maxPrefix: pref })
         // setNetworks(root)
-        console.log(root)
         dispatch({ type: 'submit', networks: root, maxHeight: getMaxHeight(root) })
       })
       .catch(function (error) {
@@ -150,13 +148,11 @@ function App() {
       .then(function (response) {
         const children = response.data
         const root = new Map(state.networks) //JSON.parse(JSON.stringify(networks.get(network)))
-        // console.log(network, root, children)
         addSubnet(root.get(network).subnets, cidr, children)
         if (children[0].prefix > root.get(network).maxPrefix) {
           root.get(network).maxPrefix = children[0].prefix
         }
         // setNetworks(root)
-        // console.log(root)
         dispatch({ type: 'divide', networks: root, maxHeight: getMaxHeight(root) })
       })
       .catch(function (error) {
@@ -202,7 +198,6 @@ function App() {
     )
       .then(function (response) {
         const root = new Map(Object.entries(response.data))
-        console.log(root)
         dispatch({ type: 'upload', networks: root, maxHeight: getMaxHeight(root) })
       })
       .catch(function (error) {
