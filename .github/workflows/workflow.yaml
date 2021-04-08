@@ -6,11 +6,43 @@ on: [push]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.16' 
+    
+    - name: Install go dependencies
+      run: |
+        go version
+        go get -u golang.org/x/lint/golint
+        
+    - name: Build
+      run: go build -o ./cmd/main
+      
+    - name: Run vet & lint
+      run: |
+        go vet .
+        golint .
+    
+    # Run testing on the code
+    - name: Run backend testing
+      run: go test -v
+    
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -20,23 +52,9 @@ jobs:
           npm ci
           CI=false npm run build
           npm test
-
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '1.16' 
-
-      - name: Build backend
-        run: go build -o ./cmd/main ./cmd
-
-      # Run testing on the code
-      - name: Run backend testing
-        run: go test -v
-      
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          procfile: "web: cmd/main"
-          
+          # procfile: "web: cmd/main"
