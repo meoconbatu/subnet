@@ -17,7 +17,7 @@ const drawTableBody = (network, subnet, rows, parent, props, activeRowRef, group
         return
     }
     subnet.children.map((child, i) => {
-        if (i == 0) {
+        if (i === 0) {
             var cell =
                 <Table.Cell active={subnet.active ? 'active' : ''}
                     onClick={() => { props.onJoin(subnet.cidr, network) }} style={{ textAlign: "right" }}
@@ -65,7 +65,7 @@ const SubnetRow = (props) => {
         borderTop: 'solid 2px grey',
     };
     return (
-        <Table.Row style={props.groupBy && props.index != 0 ? divStyle : null}>
+        <Table.Row style={props.groupBy && props.index !== 0 ? divStyle : null}>
             {props.groupBy}
             <Table.Cell>{props.subnet.cidr}</Table.Cell>
             <Table.Cell>{props.subnet.mask}</Table.Cell>

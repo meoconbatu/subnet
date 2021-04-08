@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
 import { Header, Divider } from 'semantic-ui-react'
 import axios from "axios";
 import CIDRForm from './CIDRForm';
@@ -30,6 +30,8 @@ const reducer = (state, action) => {
       return {
         ...state, networks: action.networks
       }
+    default:
+      return { ...state }
   }
 }
 function App() {
@@ -41,7 +43,7 @@ function App() {
   const qs = require('qs')
 
   const addSubnet = (root, cidr, children) => {
-    if (root.cidr == cidr) {
+    if (root.cidr === cidr) {
       root.children = children
       root.children[0].note = root.note
       root.numVisibleChild += 1
@@ -51,7 +53,7 @@ function App() {
       return 0
     }
     for (var i = 0; i < root.children.length; i++) {
-      if (addSubnet(root.children[i], cidr, children) == 1) {
+      if (addSubnet(root.children[i], cidr, children) === 1) {
         root.numVisibleChild += 1
         return 1
       }
@@ -59,7 +61,7 @@ function App() {
     return 0
   }
   const deleteSubnet = (root, cidr) => {
-    if (root.cidr == cidr) {
+    if (root.cidr === cidr) {
       root.children = null
       const temp = root.numVisibleChild
       root.numVisibleChild = 1
@@ -101,7 +103,7 @@ function App() {
     return maxHeight
   }
   const updateNote = (root, cidr, note) => {
-    if (root.cidr == cidr) {
+    if (root.cidr === cidr) {
       root.note = note
       return true
     }
@@ -120,7 +122,7 @@ function App() {
     if (root.active) {
       root.active = false
     }
-    if (root.cidr == activeNode.cidr) {
+    if (root.cidr === activeNode.cidr) {
       root.active = true
     }
     if (root.children == null) {
@@ -215,7 +217,7 @@ function App() {
       .then(function (response) {
         const root = new Map(state.networks)
         const result = new Map(Object.entries(response.data))
-        if (result.size == 0) {
+        if (result.size === 0) {
           for (const [network] of root) {
             searchNode(root.get(network).subnets, { CIDR: '' })
           }

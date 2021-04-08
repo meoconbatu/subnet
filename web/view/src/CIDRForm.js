@@ -1,5 +1,5 @@
 import React, { useState, useRef, useReducer } from 'react'
-import { Message, Button, Form, Confirm, Grid, Ref, Input, Icon } from 'semantic-ui-react'
+import { Button, Form, Confirm, Grid, Ref, Input, Icon } from 'semantic-ui-react'
 
 const reducer = (state, action) => {
   const { name, value, hasError, error, isFormValid } = action.data
@@ -10,6 +10,8 @@ const reducer = (state, action) => {
         [name]: { value, hasError, error },
         isFormValid
       }
+    default:
+      return { ...state }
   }
 }
 const CIDRForm = (props) => {
@@ -22,7 +24,6 @@ const CIDRForm = (props) => {
       prefix: { value: '25', hasError: false, error: '' },
       isFormValid: true
     })
-  const [found, setFound] = useState(null)
   const fileRef = useRef(null)
 
   const handleConfirm = () => {
@@ -44,9 +45,8 @@ const CIDRForm = (props) => {
     fileRef.current.value = ''
   }
   const handleSearch = () => {
-    if (search != '') {
-      const newFound = props.onSearch(search)
-      setFound(newFound)
+    if (search !== '') {
+      props.onSearch(search)
     }
   }
   const handleChange = (e) => {
@@ -55,10 +55,10 @@ const CIDRForm = (props) => {
     let isFormValid = true
     for (const key in state) {
       const item = state[key]
-      if (key == name && hasError) {
+      if (key === name && hasError) {
         isFormValid = false
         break
-      } else if (key != name && item.hasError) {
+      } else if (key !== name && item.hasError) {
         isFormValid = false
         break
       }
@@ -78,6 +78,8 @@ const CIDRForm = (props) => {
           hasError = true
         }
         break
+      default:
+        hasError = true
     }
     return { hasError, error }
   }
@@ -100,7 +102,7 @@ const CIDRForm = (props) => {
           <input onChange={handleUpload} type='file' style={{ display: 'none' }} />
         </Ref>
         <Input style={{ margin: '0 .25em 0 0' }}
-          onKeyDown={(e) => e.key == 'Enter' ? handleSearch() : null}
+          onKeyDown={(e) => e.key === 'Enter' ? handleSearch() : null}
           onChange={e => setSearch(e.target.value)}
           icon={<Icon onClick={handleSearch} name='search' link />}
           placeholder='Search...'
