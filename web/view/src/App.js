@@ -33,7 +33,7 @@ const reducer = (state, action) => {
   }
 }
 function App() {
-  axios.defaults.baseURL = 'http://localhost:8080'
+  // axios.defaults.baseURL = 'http://localhost:8080'
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
   const [state, dispatch] = useReducer(reducer, { networks: new Map(), maxHeight: 0 })
@@ -133,7 +133,7 @@ function App() {
     return false
   }
   const handleSubmit = (addr, pref) => {
-    axios.post(axios.defaults.baseURL + '/subnet', qs.stringify({ address: addr, prefix: pref }))
+    axios.post('/subnet', qs.stringify({ address: addr, prefix: pref }))
       .then(function (response) {
         const root = new Map(state.networks)
         root.set(response.data.cidr, { subnets: response.data, maxPrefix: pref })
@@ -146,7 +146,7 @@ function App() {
       });
   }
   const handleDivide = (cidr, network) => {
-    axios.post(axios.defaults.baseURL + '/divide', qs.stringify({ cidr: cidr }))
+    axios.post('/divide', qs.stringify({ cidr: cidr }))
       .then(function (response) {
         const children = response.data
         const root = new Map(state.networks) //JSON.parse(JSON.stringify(networks.get(network)))
@@ -179,7 +179,7 @@ function App() {
     dispatch({ type: 'note', networks: root })
   }
   const handleDownload = () => {
-    axios.post(axios.defaults.baseURL + '/download', Object.fromEntries(state.networks)
+    axios.post('/download', Object.fromEntries(state.networks)
       //  new Blob([JSON.stringify(state.networks)], { type: "application/json" })
     )
       .then(function (response) {
@@ -198,7 +198,7 @@ function App() {
   }
   const handleUpload = (newsubnets) => {
     axios.post(
-      axios.defaults.baseURL + '/upload', newsubnets
+      '/upload', newsubnets
     )
       .then(function (response) {
         const root = new Map(Object.entries(response.data))
@@ -214,7 +214,7 @@ function App() {
       return
     }
     axios.post(
-      axios.defaults.baseURL + '/search', { network: Object.fromEntries(state.networks), cidr: searchStr }
+      '/search', { network: Object.fromEntries(state.networks), cidr: searchStr }
       // new Blob([JSON.stringify({ network: Object.fromEntries(state.subnets), cidr: searchStr })], { type: "application/json" }),
     )
       .then(function (response) {
