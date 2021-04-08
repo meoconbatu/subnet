@@ -21,11 +21,6 @@ jobs:
     - name: Install node dependencies
       run: npm install    
 
-    - name: Run frontend testing
-      run: npm test
-      env:
-          CI: true
-
     - name: Build frontend
       run: npm run build
 
