@@ -85,7 +85,7 @@ const CIDRForm = (props) => {
   return (
     <Grid columns={2}>
       <Grid.Column>
-        <Form onSubmit={() => setOpen(true)} error='true'>
+        <Form onSubmit={() => setOpen(true)}>
           <Form.Group inline>
             <Form.Input name='address' error={state.address.hasError && true} label='CIDR:' width={4} onChange={handleChange} value={state.address.value} />
             <Form.Input name='prefix' error={state.prefix.hasError && true} label='/' width={2} onChange={handleChange} value={state.prefix.value} />
