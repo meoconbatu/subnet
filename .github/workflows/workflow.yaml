@@ -67,5 +67,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_FRONTEND}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          appdir: "web/view"
+          # appdir: "web/view"
           # procfile: "web: cmd/main"
