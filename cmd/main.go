@@ -13,7 +13,7 @@ func main() {
 		port = "8080"
 	}
 
-	http.Handle("/", http.FileServer(http.Dir("web/view/build/")))
+	// http.Handle("/", http.FileServer(http.Dir("web/view/build/")))
 
 	http.HandleFunc("/subnet", subnet.SubnetHandler)
 	http.HandleFunc("/divide", subnet.DivideHandler)
