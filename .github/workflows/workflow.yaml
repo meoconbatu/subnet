@@ -53,6 +53,12 @@ jobs:
           npm ci
           CI=false npm run build
           npm test
+      - name: Commit react build folder
+        run: |
+          git config --global user.name ${{ secrets.GH_USER_NAME }}
+          git config --global user.email ${{ secrets.GH_USER_EMAIL }}
+          git commit -am "react build folder change"
+          git push
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
