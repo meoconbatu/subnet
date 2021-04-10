@@ -13,7 +13,13 @@ const drawTableBody = (network, subnet, rows, parent, props, activeRowRef, group
 
             />
         obj.root = false
-        rows.push(row)
+        if (subnet.active) {
+            console.log(subnet.active)
+            // cell = <Ref innerRef={activeRowRef}>{cell}</Ref>
+            rows.push(<Ref innerRef={activeRowRef}>{row}</Ref>)
+        } else {
+            rows.push(row)
+        }
         return
     }
     subnet.children.map((child, i) => {
@@ -23,7 +29,9 @@ const drawTableBody = (network, subnet, rows, parent, props, activeRowRef, group
                     onClick={() => { props.onJoin(subnet.cidr, network) }} style={{ textAlign: "right" }}
                     rowSpan={subnet.numVisibleChild} selectable={subnet.numVisibleChild > 1 ? 'true' : 'false'}>/{subnet.prefix}
                 </Table.Cell>
+            console.log(subnet)
             if (subnet.active) {
+                console.log(subnet.active)
                 cell = <Ref innerRef={activeRowRef}>{cell}</Ref>
             }
             parent = <>{cell}{parent}</>
