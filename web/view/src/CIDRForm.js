@@ -1,5 +1,6 @@
 import React, { useState, useRef, useReducer } from 'react'
-import { Button, Form, Confirm, Grid, Ref, Input, Icon } from 'semantic-ui-react'
+import { Button, Form, Grid, Ref, Input, Icon } from 'semantic-ui-react'
+import ConfirmButton from './ConfirmButton'
 
 const reducer = (state, action) => {
   const { name, value, hasError, error, isFormValid } = action.data
@@ -16,7 +17,6 @@ const reducer = (state, action) => {
 }
 const CIDRForm = (props) => {
   const [search, setSearch] = useState('')
-  const [open, setOpen] = useState(false)
 
   const [state, dispatch] = useReducer(reducer,
     {
@@ -28,10 +28,9 @@ const CIDRForm = (props) => {
 
   const handleConfirm = () => {
     props.onSubmit(state.address.value, state.prefix.value)
-    setOpen(false)
   }
-  const handleCancel = () => {
-    setOpen(false)
+  const handleReset = () => {
+    props.onReset()
   }
   const handleDownload = () => {
     props.onDownload()
@@ -87,14 +86,13 @@ const CIDRForm = (props) => {
   return (
     <Grid columns={2}>
       <Grid.Column>
-        <Form onSubmit={() => setOpen(true)}>
+        <Form>
           <Form.Group inline>
             <Form.Input name='address' error={state.address.hasError && true} label='CIDR:' width={4} onChange={handleChange} value={state.address.value} />
             <Form.Input name='prefix' error={state.prefix.hasError && true} label='/' width={2} onChange={handleChange} value={state.prefix.value} />
-            <Button type='submit' disabled={!state.isFormValid && true}>Submit</Button>
-            <Confirm open={open} content='All subnets will be gone. Continue?' onCancel={handleCancel} onConfirm={handleConfirm} />
+            <ConfirmButton name='Add' onConfirm={handleConfirm} content='The subnet you wish to add, if exists, will be gone. Continue?'/>
+            <ConfirmButton name='Reset' onConfirm={handleReset} content='All subnets will be gone. Continue?'/>
           </Form.Group>
-          {/* <Message error header='Error' content='You can only sign up for an account once with a given e-mail address.' /> */}
         </Form>
       </Grid.Column>
       <Grid.Column textAlign='right'>

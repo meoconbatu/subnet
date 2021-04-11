@@ -30,6 +30,10 @@ const reducer = (state, action) => {
       return {
         ...state, networks: action.networks
       }
+    case 'reset':
+      return {
+        networks: action.networks, maxHeight: action.maxHeight
+      }
     default:
       return { ...state }
   }
@@ -154,6 +158,9 @@ function App() {
         console.log(error)
       });
   }
+  const handleReset = () => {
+    dispatch({ type: 'reset', networks: new Map(), maxHeight: 0 })
+  }
   const handleDivide = (cidr, network) => {
     axios.post('/divide', qs.stringify({ cidr: cidr }))
       .then(function (response) {
@@ -250,7 +257,7 @@ function App() {
     <>
       <Header as='h1'>IPv4 Subnetting</Header>
       <Divider hidden />
-      <CIDRForm onSubmit={handleSubmit} onDownload={handleDownload} onUpload={handleUpload} onSearch={handleSearch} />
+      <CIDRForm onSubmit={handleSubmit} onReset={handleReset} onDownload={handleDownload} onUpload={handleUpload} onSearch={handleSearch} />
       <Divider hidden />
       <SubnetTable networks={state.networks} maxHeight={state.maxHeight} onDivide={handleDivide} onJoin={handleJoin} onNote={handleNote} />
     </>
