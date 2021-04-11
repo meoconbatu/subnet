@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Header, Divider } from 'semantic-ui-react'
 import axios from "axios";
 import CIDRForm from './CIDRForm';
@@ -38,10 +38,19 @@ function App() {
   // axios.defaults.baseURL = 'http://localhost:8080'
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
-  const [state, dispatch] = useReducer(reducer, { networks: new Map(), maxHeight: 0 })
+  const [state, dispatch] = useReducer(
+    reducer,
+    {
+      networks: sessionStorage.getItem('stateNetworks') ? new Map(Object.entries(JSON.parse(sessionStorage.getItem('stateNetworks')))) : new Map(),
+      maxHeight: JSON.parse(sessionStorage.getItem('stateMaxHeight')) || 0
+    }
+  )
   // const [networks, setNetworks] = useState(new Map())
   const qs = require('qs')
-
+  useEffect(() => {
+    sessionStorage.setItem('stateNetworks', JSON.stringify(Object.fromEntries(state.networks)))
+    sessionStorage.setItem('stateMaxHeight', JSON.stringify(state.maxHeight))
+  })
   const addSubnet = (root, cidr, children) => {
     if (root.cidr === cidr) {
       root.children = children
