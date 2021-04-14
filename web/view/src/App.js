@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useState, useReducer } from 'react';
 import { Header, Divider } from 'semantic-ui-react'
 import axios from "axios";
 import CIDRForm from './CIDRForm';
@@ -8,31 +8,31 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'submit':
       return {
-        networks: action.networks, maxHeight: action.maxHeight
+        networks: action.networks, maxHeight: action.maxHeight, searchFound: null
       }
     case 'divide':
       return {
-        networks: action.networks, maxHeight: action.maxHeight > state.maxHeight ? action.maxHeight : state.maxHeight
+        networks: action.networks, maxHeight: action.maxHeight > state.maxHeight ? action.maxHeight : state.maxHeight, searchFound: null
       }
     case 'join':
       return {
-        networks: action.networks, maxHeight: action.maxHeight
+        networks: action.networks, maxHeight: action.maxHeight, searchFound: null
       }
     case 'note':
       return {
-        ...state, networks: action.networks
+        ...state, networks: action.networks, searchFound: null
       }
     case 'upload':
       return {
-        networks: action.networks, maxHeight: action.maxHeight
+        networks: action.networks, maxHeight: action.maxHeight, searchFound: null
       }
     case 'search':
       return {
-        ...state, networks: action.networks
+        ...state, networks: action.networks, searchFound: action.searchFound
       }
     case 'reset':
       return {
-        networks: action.networks, maxHeight: action.maxHeight
+        networks: action.networks, maxHeight: action.maxHeight, searchFound: null
       }
     default:
       return { ...state }
@@ -41,12 +41,12 @@ const reducer = (state, action) => {
 function App() {
   // axios.defaults.baseURL = 'http://localhost:8080'
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-
   const [state, dispatch] = useReducer(
     reducer,
     {
       networks: sessionStorage.getItem('stateNetworks') ? new Map(Object.entries(JSON.parse(sessionStorage.getItem('stateNetworks')))) : new Map(),
-      maxHeight: JSON.parse(sessionStorage.getItem('stateMaxHeight')) || 0
+      maxHeight: JSON.parse(sessionStorage.getItem('stateMaxHeight')) || 0,
+      searchFound: null
     }
   )
   // const [networks, setNetworks] = useState(new Map())
@@ -243,21 +243,21 @@ function App() {
           }
         }
         // searchNode(root, response.data)
-        dispatch({ type: 'search', networks: root })
+        dispatch({ type: 'search', networks: root, searchFound: result.size })
       })
       .catch(function (error) {
         const root = new Map(state.networks)
         for (const [network] of root) {
           searchNode(root.get(network).subnets, { CIDR: '' })
         }
-        dispatch({ type: 'search', networks: root })
+        dispatch({ type: 'search', networks: root, searchFound: 0 })
       });
   }
   return (
     <>
       <Header as='h1'>IPv4 Subnetting</Header>
       <Divider hidden />
-      <CIDRForm onSubmit={handleSubmit} onReset={handleReset} onDownload={handleDownload} onUpload={handleUpload} onSearch={handleSearch} />
+      <CIDRForm onSubmit={handleSubmit} onReset={handleReset} onDownload={handleDownload} onUpload={handleUpload} onSearch={handleSearch} searchFound={state.searchFound} />
       <Divider hidden />
       <SubnetTable networks={state.networks} maxHeight={state.maxHeight} onDivide={handleDivide} onJoin={handleJoin} onNote={handleNote} />
     </>

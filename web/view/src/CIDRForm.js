@@ -90,8 +90,8 @@ const CIDRForm = (props) => {
           <Form.Group inline>
             <Form.Input name='address' error={state.address.hasError && true} label='CIDR:' width={4} onChange={handleChange} value={state.address.value} />
             <Form.Input name='prefix' error={state.prefix.hasError && true} label='/' width={2} onChange={handleChange} value={state.prefix.value} />
-            <ConfirmButton name='Add' onConfirm={handleConfirm} content='The subnet you wish to add, if exists, will be gone. Continue?'/>
-            <ConfirmButton name='Reset' onConfirm={handleReset} content='All subnets will be gone. Continue?'/>
+            <ConfirmButton name='Add' onConfirm={handleConfirm} content='The subnet you wish to add, if exists, will be gone. Continue?' />
+            <ConfirmButton name='Reset' onConfirm={handleReset} content='All subnets will be gone. Continue?' />
           </Form.Group>
         </Form>
       </Grid.Column>
@@ -99,6 +99,7 @@ const CIDRForm = (props) => {
         <Ref innerRef={fileRef}>
           <input onChange={handleUpload} type='file' style={{ display: 'none' }} />
         </Ref>
+        <span style={{ margin: '0 .5em 0 0' }}>{props.searchFound == 0 ? 'Not found' : null}</span>
         <Input style={{ margin: '0 .25em 0 0' }}
           onKeyDown={(e) => e.key === 'Enter' ? handleSearch() : null}
           onChange={e => setSearch(e.target.value)}
