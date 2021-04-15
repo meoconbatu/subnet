@@ -6,6 +6,17 @@ import SubnetTable from './SubnetTable';
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'search':
+      break
+    default:
+      if (state.searchFound == 0) {
+        break
+      }
+      for (const [network] of action.networks) {
+        searchNode(action.networks.get(network).subnets, { CIDR: '' })
+      }
+  }
+  switch (action.type) {
     case 'submit':
       return {
         networks: action.networks, maxHeight: action.maxHeight, searchFound: null
@@ -37,6 +48,21 @@ const reducer = (state, action) => {
     default:
       return { ...state }
   }
+}
+const searchNode = (root, activeNode) => {
+  if (root.active) {
+    root.active = false
+  }
+  if (root.cidr === activeNode.cidr) {
+    root.active = true
+  }
+  if (root.children == null) {
+    return false
+  }
+  for (var i = 0; i < root.children.length; i++) {
+    searchNode(root.children[i], activeNode)
+  }
+  return false
 }
 function App() {
   // axios.defaults.baseURL = 'http://localhost:8080'
@@ -131,21 +157,7 @@ function App() {
     }
     return false
   }
-  const searchNode = (root, activeNode) => {
-    if (root.active) {
-      root.active = false
-    }
-    if (root.cidr === activeNode.cidr) {
-      root.active = true
-    }
-    if (root.children == null) {
-      return false
-    }
-    for (var i = 0; i < root.children.length; i++) {
-      searchNode(root.children[i], activeNode)
-    }
-    return false
-  }
+  
   const handleSubmit = (addr, pref) => {
     axios.post('/subnet', qs.stringify({ address: addr, prefix: pref }))
       .then(function (response) {
